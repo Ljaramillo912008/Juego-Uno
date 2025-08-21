@@ -172,13 +172,13 @@
             <button id="startButton" class="gradient-button px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold rounded-lg shadow-xl hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-75">
                 PLAY
             </button>
-            <button class="gradient-button px-8 py-4 bg-gradient-to-r from-yellow-600 to-yellow-800 text-white font-bold rounded-lg shadow-xl hover:from-yellow-700 hover:to-yellow-900 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-75">
+            <button id="optionsButton" class="gradient-button px-8 py-4 bg-gradient-to-r from-yellow-600 to-yellow-800 text-white font-bold rounded-lg shadow-xl hover:from-yellow-700 hover:to-yellow-900 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-75">
                 OPTIONS
             </button>
-            <button class="gradient-button px-8 py-4 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg shadow-xl hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-75">
+            <button id="quitButton" class="gradient-button px-8 py-4 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg shadow-xl hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-75">
                 QUIT
             </button>
-            <button class="gradient-button px-8 py-4 bg-gradient-to-r from-green-600 to-green-800 text-white font-bold rounded-lg shadow-xl hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-75">
+            <button id="collectionButton" class="gradient-button px-8 py-4 bg-gradient-to-r from-green-600 to-green-800 text-white font-bold rounded-lg shadow-xl hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-75">
                 COLLECTION
             </button>
         </section>
@@ -249,6 +249,48 @@
         </div>
     </div>
 
+    <!-- Modal de Opciones (oculto por defecto) -->
+    <div id="options-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 class="text-3xl font-bold text-white mb-6">Opciones del Juego</h2>
+            <p class="text-lg text-gray-300 mb-4">Dificultad actual: <span id="current-difficulty-display" class="font-bold text-yellow-300">Normal</span></p>
+            <div class="flex flex-col gap-4">
+                <button id="difficulty-easy" class="gradient-button px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-bold rounded-lg shadow-xl hover:from-gray-700 hover:to-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:ring-opacity-75">
+                    Fácil
+                </button>
+                <button id="difficulty-normal" class="gradient-button px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-bold rounded-lg shadow-xl hover:from-gray-700 hover:to-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:ring-opacity-75">
+                    Normal
+                </button>
+                <button id="difficulty-hard" class="gradient-button px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-bold rounded-lg shadow-xl hover:from-gray-700 hover:to-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:ring-opacity-75">
+                    Difícil
+                </button>
+                <button id="close-options-button" class="gradient-button mt-6 px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-lg shadow-xl hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-75">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Colección (oculto por defecto) -->
+    <div id="collection-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 class="text-3xl font-bold text-white mb-6">Tu Colección de Cartas</h2>
+            <p class="text-lg text-gray-300 mb-4">¡Explora tus logros y cartas especiales aquí!</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                <!-- Placeholder para cartas de la colección -->
+                <div class="card bg-red-500">1</div>
+                <div class="card bg-blue-500">2</div>
+                <div class="card bg-green-500">3</div>
+                <div class="card bg-yellow-500">4</div>
+                <div class="card bg-gray-800">🌈</div>
+                <div class="card bg-gray-800">+4</div>
+            </div>
+            <button id="close-collection-button" class="gradient-button px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-lg shadow-xl hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-75">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
 
     <!-- Módulos de Firebase y Lógica del Juego -->
     <script type="module">
@@ -290,6 +332,12 @@
         const playerTurnIndicator = document.getElementById('player-turn-indicator');
         const aiTurnIndicator = document.getElementById('ai-turn-indicator');
 
+        // Elementos de los botones de control del menú principal
+        const optionsButton = document.getElementById('optionsButton');
+        const quitButton = document.getElementById('quitButton');
+        const collectionButton = document.getElementById('collectionButton');
+
+
         // Elementos del modal de fin de juego
         const gameOverModal = document.getElementById('game-over-modal');
         const gameOverTitle = document.getElementById('game-over-title');
@@ -300,6 +348,19 @@
         const colorPickerModal = document.getElementById('color-picker-modal');
         const colorChoiceButtons = colorPickerModal.querySelectorAll('.color-choice-button');
 
+        // Elementos del modal de opciones
+        const optionsModal = document.getElementById('options-modal');
+        const closeOptionsButton = document.getElementById('close-options-button');
+        const difficultyEasyButton = document.getElementById('difficulty-easy');
+        const difficultyNormalButton = document.getElementById('difficulty-normal');
+        const difficultyHardButton = document.getElementById('difficulty-hard');
+        const currentDifficultyDisplay = document.getElementById('current-difficulty-display');
+
+
+        // Elementos del modal de colección
+        const collectionModal = document.getElementById('collection-modal');
+        const closeCollectionButton = document.getElementById('close-collection-button');
+
 
         // --- Estado del Juego ---
         // Variables para mantener el estado actual del juego.
@@ -309,6 +370,7 @@
         let discardPile = []; // Cartas en la pila de descarte
         let isPlayerTurn = true; // Booleano para saber de quién es el turno
         let currentColor = ''; // El color actual en juego (determinado por la carta superior del descarte o una carta WILD)
+        let currentDifficulty = 'Normal'; // Dificultad del juego: 'Fácil', 'Normal', 'Difícil'
 
         const COLORS = ['red', 'yellow', 'green', 'blue']; // Colores de las cartas
         // Se añaden las cartas Wild y Wild Draw Four
@@ -391,7 +453,8 @@
             cardDiv.textContent = displayValue;
             
             // Si la carta es el descarte, y no es WILD o D4, mostrar el color actual
-            if (cardDiv.id === 'discard-pile' && card.color === 'none') {
+            // El color indicador se mostrará siempre si la carta es comodín y se ha establecido un currentColor.
+            if ((card.value === 'WILD' || card.value === 'D4') && currentColor !== '') {
                 const colorIndicator = document.createElement('div');
                 colorIndicator.classList.add('absolute', 'bottom-1', 'right-1', 'w-4', 'h-4', 'rounded-full', 'border', 'border-white');
                 colorIndicator.style.backgroundColor = getTailwindColor(currentColor);
@@ -419,9 +482,10 @@
             playerHand.forEach((card, index) => {
                 const cardDiv = renderCard(card);
                 cardDiv.dataset.index = index;
-                // Solo añadir event listener si es el turno del jugador
-                if (isPlayerTurn) {
+                if (isPlayerTurn) { // Solo añadir event listener y estilo de cursor si es el turno del jugador
                     cardDiv.addEventListener('click', () => handlePlayerMove(index));
+                    cardDiv.classList.add('cursor-pointer'); 
+                    cardDiv.classList.remove('cursor-not-allowed'); 
                 } else {
                     cardDiv.classList.remove('cursor-pointer');
                     cardDiv.classList.add('cursor-not-allowed');
@@ -547,14 +611,13 @@
             // Las cartas WILD y D4 siempre son válidas por su naturaleza comodín.
             if (card.value === 'WILD' || card.value === 'D4') {
                 // Para D4, hay una regla adicional: solo si no hay cartas jugables del color actual
-                if (card.value === 'D4' && isPlayerTurn) { // Solo para el jugador, la IA no necesita esta restricción para su lógica
-                    const hasPlayableColorCard = playerHand.some(hCard => 
+                // Esta verificación solo se aplica si es el turno del jugador para evitar que la IA la abuse.
+                if (card.value === 'D4' && isPlayerTurn) { 
+                    const hasPlayableColorOrValueCard = playerHand.some(hCard => 
                         (hCard.color === currentColor || hCard.value === currentDiscardCard.value) && hCard.value !== 'WILD' && hCard.value !== 'D4'
                     );
-                    console.log("Player has playable color card for D4 check:", hasPlayableColorCard);
-                    if (hasPlayableColorCard) {
-                        // Si tiene una carta del color actual O el valor de la carta superior, la D4 NO es una jugada legal.
-                        // Esto es una simplificación de la regla de "desafío" de la D4.
+                    console.log("Player has playable color/value card for D4 check:", hasPlayableColorOrValueCard);
+                    if (hasPlayableColorOrValueCard) {
                         return false; 
                     }
                 }
@@ -590,8 +653,10 @@
             await animateCardMovement(playedCardElement, discardPileDiv);
 
             discardPile.push(playerHand.splice(cardIndex, 1)[0]);
+            
+            // Re-renderizar después de la jugada y posible cambio de color por WILD/D4
             renderHands();
-            renderPiles(); // Esto actualizará currentColor si la carta jugada tiene un color
+            renderPiles(); 
 
             if (card.value === 'WILD' || card.value === 'D4') {
                 console.log("Player played a WILD/D4, waiting for color choice.");
@@ -609,6 +674,8 @@
 
             if (!currentTurnRetained) {
                 switchTurn();
+                renderHands(); // Re-renderizar después de cambiar el turno
+                renderPiles();
                 updateGameMessage("Turno de la IA...");
                 console.log("Player's turn ended. Passing to AI.");
                 setTimeout(aiTurn, 1500);
@@ -616,6 +683,8 @@
                 updateGameMessage("Es tu turno de nuevo.");
                 updateTurnIndicator();
                 console.log("Player's turn retained. Player plays again.");
+                renderHands(); // Re-renderizar para actualizar el estado del cursor si se mantiene el turno
+                renderPiles();
             }
         }
 
@@ -657,7 +726,7 @@
             }
             
             updateGameMessage("Robaste una carta.");
-            drawCards(playerHand, 1);
+            drawCards(playerHand, 1); // drawCards ya llama a renderHands
             
             const drawnCard = playerHand[playerHand.length - 1];
             const topCard = discardPile[discardPile.length - 1];
@@ -667,16 +736,23 @@
             if (isMoveValid(drawnCard, topCard)) {
                 updateGameMessage("Robaste una carta jugable. ¡Puedes jugarla ahora o pasar el turno!");
                 console.log("Drawn card is playable.");
-                // Permitir al jugador jugar la carta robada
-                playerHandDiv.lastChild.classList.add('animate-bounce-in'); // Opcional: animación para la nueva carta
-                playerHandDiv.lastChild.addEventListener('click', (event) => {
-                    // Remover el botón de pasar turno si existe
-                    const existingPassButton = gameMessageP.parentNode.querySelector('.pass-turn-button');
-                    if (existingPassButton) existingPassButton.remove();
+                // Remover cualquier botón de "Pasar Turno" existente
+                const existingPassButton = gameMessageP.parentNode.querySelector('.pass-turn-button');
+                if (existingPassButton) existingPassButton.remove();
 
-                    const idx = playerHand.indexOf(drawnCard); // Encontrar el índice correcto de la carta robada
-                    if (idx !== -1) handlePlayerMove(idx);
-                }, { once: true }); // Para que solo se pueda jugar una vez
+                // Permitir al jugador jugar la carta robada
+                // Asegurarse de que el event listener se adjunte a la carta recién renderizada
+                const lastCardElement = playerHandDiv.children[playerHand.length - 1];
+                if (lastCardElement) {
+                    lastCardElement.classList.add('animate-bounce-in'); // Opcional: animación para la nueva carta
+                    lastCardElement.addEventListener('click', (event) => {
+                        const idx = playerHand.indexOf(drawnCard); // Encontrar el índice correcto de la carta robada
+                        if (idx !== -1) handlePlayerMove(idx);
+                        // Limpiar el botón de pasar turno después de jugar la carta robada
+                        const existingPassBtn = gameMessageP.parentNode.querySelector('.pass-turn-button');
+                        if (existingPassBtn) existingPassBtn.remove();
+                    }, { once: true }); // Para que solo se pueda jugar una vez
+                }
                 
                 // Opción para pasar el turno
                 const passTurnButton = document.createElement('button');
@@ -686,6 +762,8 @@
                 passTurnButton.addEventListener('click', () => {
                     passTurnButton.remove();
                     switchTurn();
+                    renderHands(); // Re-renderizar después de cambiar el turno
+                    renderPiles();
                     updateGameMessage("Pasaste tu turno. Turno de la IA...");
                     setTimeout(aiTurn, 1500);
                 }, { once: true });
@@ -693,6 +771,8 @@
             } else {
                 console.log("Drawn card is not playable. Passing turn.");
                 switchTurn();
+                renderHands(); // Re-renderizar después de cambiar el turno
+                renderPiles();
                 updateGameMessage("La carta robada no es jugable. Turno de la IA...");
                 setTimeout(aiTurn, 1500);
             }
@@ -700,78 +780,106 @@
         
         // Lógica del turno de la IA.
         async function aiTurn() {
-            console.log("AI turn initiated. isPlayerTurn:", isPlayerTurn);
+            console.log("AI turn initiated. Current difficulty:", currentDifficulty);
             const topCard = discardPile[discardPile.length - 1];
             let playedCard = null;
             let currentTurnRetained = false;
 
-            // Estrategia de la IA:
-            // 1. Buscar una carta especial (D2, SKIP, REV) que coincida con el color actual
-            // 2. Buscar una carta normal que coincida con el color o valor actual
-            // 3. Buscar una carta WILD o D4 (priorizando WILD si no hay jugadas de color)
-            // 4. Si no hay jugadas, robar
-
-            let playableCards = aiHand.filter(card => {
-                const isValid = isMoveValid(card, topCard);
-                console.log(`AI checking card: ${JSON.stringify(card)}, isValid: ${isValid}`);
-                return isValid;
-            });
+            let playableCards = aiHand.filter(card => isMoveValid(card, topCard));
             console.log("AI playable cards:", playableCards);
 
-            // Prioridad 1: Jugar una carta especial de acción que coincida con el color O valor
-            let specialActionCard = playableCards.find(card => card.value === 'SKIP' || card.value === 'REV' || card.value === 'D2');
-            if (specialActionCard) {
-                const index = aiHand.indexOf(specialActionCard);
-                playedCard = aiHand.splice(index, 1)[0];
-            } else {
-                // Prioridad 2: Jugar una carta de color normal
-                let normalColorCard = playableCards.find(card => card.color === currentColor && card.value !== 'WILD' && card.value !== 'D4');
-                if (normalColorCard) {
-                    const index = aiHand.indexOf(normalColorCard);
-                    playedCard = aiHand.splice(index, 1)[0];
-                } else {
-                    // Prioridad 3: Jugar una carta con el mismo valor (si no es una carta especial de acción y no hay del color)
-                    let sameValueCard = playableCards.find(card => card.value === topCard.value && card.color !== 'none');
-                    if (sameValueCard) {
-                        const index = aiHand.indexOf(sameValueCard);
-                        playedCard = aiHand.splice(index, 1)[0];
-                    } else {
-                         // Prioridad 4: Jugar una carta WILD o D4 (como último recurso si no hay jugadas de color/valor)
-                        let wildCard = playableCards.find(card => card.value === 'WILD' || card.value === 'D4');
-                        if (wildCard) {
-                            const index = aiHand.indexOf(wildCard);
-                            playedCard = aiHand.splice(index, 1)[0];
-                            // La IA elige un color para las cartas comodín basado en la mayoría de sus cartas o aleatorio
-                            const colorCounts = {};
-                            COLORS.forEach(c => colorCounts[c] = aiHand.filter(hc => hc.color === c).length);
-                            let mostFrequentColor = COLORS[0];
-                            let maxCount = -1;
-                            for (const color of COLORS) {
-                                if (colorCounts[color] > maxCount) {
-                                    maxCount = colorCounts[color];
-                                    mostFrequentColor = color;
-                                }
-                            }
-                            currentColor = mostFrequentColor || COLORS[Math.floor(Math.random() * COLORS.length)];
-                            console.log("AI chose new color:", currentColor);
+            if (currentDifficulty === 'Fácil') {
+                playedCard = playableCards[0]; // Juega la primera carta válida
+                if (playedCard && (playedCard.value === 'WILD' || playedCard.value === 'D4')) {
+                    currentColor = COLORS[Math.floor(Math.random() * COLORS.length)]; // Color aleatorio
+                }
+            } else if (currentDifficulty === 'Normal') {
+                // Normal: Prioriza acción, luego color, luego valor, luego comodín
+                playedCard = playableCards.find(card => card.value === 'SKIP' || card.value === 'REV' || card.value === 'D2') ||
+                             playableCards.find(card => card.color === currentColor && card.color !== 'none') ||
+                             playableCards.find(card => card.value === topCard.value && card.color !== 'none') ||
+                             playableCards.find(card => card.value === 'WILD') ||
+                             playableCards.find(card => card.value === 'D4');
+
+                if (playedCard && (playedCard.value === 'WILD' || playedCard.value === 'D4')) {
+                    // Elegir el color que más tiene la IA
+                    const colorCounts = {};
+                    COLORS.forEach(c => colorCounts[c] = aiHand.filter(hc => hc.color === c).length);
+                    let mostFrequentColor = COLORS[0];
+                    let maxCount = -1;
+                    for (const color of COLORS) {
+                        if (colorCounts[color] > maxCount) {
+                            maxCount = colorCounts[color];
+                            mostFrequentColor = color;
                         }
+                    }
+                    currentColor = mostFrequentColor || COLORS[Math.floor(Math.random() * COLORS.length)];
+                }
+            } else if (currentDifficulty === 'Difícil') {
+                // Difícil: Más estratégico, intentando guardar comodines y +4, o usarlos si el oponente tiene pocas cartas
+                // 1. Intentar ganar el juego si es posible
+                if (aiHand.length === 1 && playableCards.some(card => isMoveValid(card, topCard))) {
+                    playedCard = playableCards.find(card => isMoveValid(card, topCard)); // Juega cualquier carta para ganar
+                } else if (aiHand.length === 2 && playableCards.some(card => isMoveValid(card, topCard))) {
+                    playedCard = playableCards.find(card => isMoveValid(card, topCard)); // Juega cualquier carta para dejar 1
+                }
+                
+                if (!playedCard) {
+                    // 2. Priorizar cartas de acción si son beneficiosas (ej. +2 si el jugador tiene bastantes cartas)
+                    const playerHasManyCards = playerHand.length > 3;
+                    playedCard = playableCards.find(card => 
+                        (card.value === 'D2' && playerHasManyCards) || 
+                        (card.value === 'SKIP' || card.value === 'REV')
+                    );
+                }
+
+                if (!playedCard) {
+                    // 3. Jugar carta de color normal
+                    playedCard = playableCards.find(card => card.color === currentColor && card.color !== 'none');
+                }
+
+                if (!playedCard) {
+                    // 4. Jugar carta de valor normal
+                    playedCard = playableCards.find(card => card.value === topCard.value && card.color !== 'none');
+                }
+
+                if (!playedCard) {
+                    // 5. Jugar comodín estratégico: elegir color con más cartas o el que el jugador menos tenga
+                    let wildCard = playableCards.find(card => card.value === 'WILD' || card.value === 'D4');
+                    if (wildCard) {
+                        playedCard = wildCard;
+                        const colorCounts = {};
+                        COLORS.forEach(c => colorCounts[c] = aiHand.filter(hc => hc.color === c).length);
+                        
+                        // Tratar de elegir un color que la IA tenga en abundancia
+                        let bestColor = null;
+                        let maxCount = -1;
+                        for (const color of COLORS) {
+                            if (colorCounts[color] > maxCount) {
+                                maxCount = colorCounts[color];
+                                bestColor = color;
+                            }
+                        }
+                        // Si no hay un color claro, elegir uno aleatorio
+                        currentColor = bestColor || COLORS[Math.floor(Math.random() * COLORS.length)];
                     }
                 }
             }
 
-
             if (playedCard) {
                 console.log("AI playing card:", playedCard);
-                // Animación de la carta de la IA moviéndose
+                const index = aiHand.indexOf(playedCard);
                 const tempCardForAI = document.createElement('div');
-                tempCardForAI.classList.add('card', 'card-back');
+                tempCardForAI.classList.add('card', 'card-back'); // Mantiene la carta boca abajo para la animación
                 aiHandDiv.appendChild(tempCardForAI); 
 
                 await animateCardMovement(tempCardForAI, discardPileDiv);
                 tempCardForAI.remove(); 
 
-                discardPile.push(playedCard);
-                renderHands();
+                discardPile.push(aiHand.splice(index, 1)[0]);
+                
+                // Re-renderizar después de la jugada y posible cambio de color por WILD/D4
+                renderHands(); 
                 renderPiles();
 
                 if (aiHand.length === 0) {
@@ -779,11 +887,13 @@
                     return;
                 }
 
-                currentTurnRetained = applySpecialCardEffect(playedCard, false); // false porque fue jugado por la IA
+                currentTurnRetained = applySpecialCardEffect(playedCard, false);
                 console.log("AI special card effect applied. Current turn retained:", currentTurnRetained);
 
                 if (!currentTurnRetained) {
                     switchTurn();
+                    renderHands(); // Re-renderizar después de cambiar el turno
+                    renderPiles();
                     updateGameMessage("Es tu turno.");
                     console.log("AI's turn ended. Passing to player.");
                 } else {
@@ -791,10 +901,11 @@
                     updateTurnIndicator();
                     console.log("AI's turn retained. AI plays again.");
                     setTimeout(aiTurn, 1500);
+                    renderHands(); // Re-renderizar para actualizar el estado del cursor si se mantiene el turno
+                    renderPiles();
                 }
 
             } else {
-                // La IA no tiene cartas jugables, debe robar
                 console.log("AI has no playable cards. Drawing.");
                 updateGameMessage("La IA robó una carta.");
                 drawCards(aiHand, 1);
@@ -816,7 +927,9 @@
                         tempCardForAI.remove(); 
 
                         discardPile.push(playedAICard);
-                        renderHands();
+                        
+                        // Re-renderizar después de la jugada y posible cambio de color por WILD/D4
+                        renderHands(); 
                         renderPiles();
 
                         if (aiHand.length === 0) {
@@ -828,9 +941,13 @@
 
                         if (!currentTurnRetained) {
                             switchTurn();
+                            renderHands(); // Re-renderizar después de cambiar el turno
+                            renderPiles();
                             updateGameMessage("Es tu turno.");
                             console.log("AI's turn ended (played drawn card). Passing to player.");
                         } else {
+                            renderHands(); // Re-renderizar para actualizar el estado del cursor si se mantiene el turno
+                            renderPiles();
                             updateGameMessage("La IA juega de nuevo.");
                             updateTurnIndicator();
                             console.log("AI's turn retained (played drawn card). AI plays again.");
@@ -840,6 +957,8 @@
                 } else {
                     console.log("AI's drawn card is not playable. Passing turn.");
                     switchTurn();
+                    renderHands(); // Re-renderizar después de cambiar el turno
+                    renderPiles();
                     updateGameMessage("La IA no pudo jugar y pasó su turno. Es tu turno.");
                 }
             }
@@ -905,6 +1024,41 @@
             });
         }
 
+        // --- Nuevas Funciones para los Botones del Menú Principal ---
+        function showOptionsModal() {
+            optionsModal.classList.remove('hidden');
+            mainMenu.classList.add('hidden'); // Oculta el menú principal al abrir opciones
+        }
+
+        function hideOptionsModal() {
+            optionsModal.classList.add('hidden');
+            mainMenu.classList.remove('hidden'); // Vuelve al menú principal
+        }
+
+        function showCollectionModal() {
+            collectionModal.classList.remove('hidden');
+            mainMenu.classList.add('hidden'); // Oculta el menú principal al abrir la colección
+        }
+
+        function hideCollectionModal() {
+            collectionModal.classList.add('hidden');
+            mainMenu.classList.remove('hidden'); // Vuelve al menú principal
+        }
+
+        function quitGame() {
+            // Lógica para salir del juego (simplemente volver al menú principal y reiniciar el estado)
+            hideGameOverModal(); // Reutiliza la función para ocultar el modal de fin de juego y volver al menú
+            // No es necesario llamar a resetGame() aquí, hideGameOverModal() ya lo hace.
+        }
+
+        // Función para establecer la dificultad
+        function setDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            currentDifficultyDisplay.textContent = difficulty;
+            updateGameMessage(`Dificultad establecida a: ${difficulty}`);
+            console.log("Difficulty set to:", currentDifficulty);
+        }
+
 
         // Inicia un nuevo juego.
         function iniciarJuego() {
@@ -934,6 +1088,19 @@
         startButton.addEventListener('click', iniciarJuego);
         drawPileDiv.addEventListener('click', drawPlayerCard);
         restartButton.addEventListener('click', hideGameOverModal);
+
+        // Eventos para los nuevos botones del menú
+        optionsButton.addEventListener('click', showOptionsModal);
+        closeOptionsButton.addEventListener('click', hideOptionsModal);
+        collectionButton.addEventListener('click', showCollectionModal);
+        closeCollectionButton.addEventListener('click', hideCollectionModal);
+        quitButton.addEventListener('click', quitGame);
+
+        // Eventos para los botones de dificultad
+        difficultyEasyButton.addEventListener('click', () => setDifficulty('Fácil'));
+        difficultyNormalButton.addEventListener('click', () => setDifficulty('Normal'));
+        difficultyHardButton.addEventListener('click', () => setDifficulty('Difícil'));
+
 
         // Iniciar la autenticación cuando el script se cargue
         authenticateUser();
